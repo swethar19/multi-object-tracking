@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Sign In — TrackVision{% endblock %}
+{% block body %}
+
+<div class="auth-layout">
+  <div class="auth-brand">
+    <a href="/" class="nav-logo large">Track<span>Vision</span></a>
+    <p class="auth-brand-sub">AI-powered multi-object tracking platform</p>
+    <div class="auth-brand-visual">
+      <div class="floating-card">
+        <div class="fc-icon green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div>
+          <strong>Secure Access</strong>
+          <small>Your data is protected</small>
+        </div>
+      </div>
+      <div class="floating-card fc-delay">
+        <div class="fc-icon blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        </div>
+        <div>
+          <strong>Real-time</strong>
+          <small>Live detection feed</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="auth-form-wrap">
+    <div class="auth-card">
+      <h2 class="auth-title">Welcome back</h2>
+      <p class="auth-sub">Sign in to your TrackVision account</p>
+
+      {% if error %}
+      <div class="alert alert-error">{{ error }}</div>
+      {% endif %}
+
+      <form method="POST" action="{{ url_for('login') }}" class="auth-form">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" name="username" placeholder="your_username" required autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" name="password" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+      </form>
+
+      <p class="auth-switch">Don't have an account? <a href="{{ url_for('register') }}">Create one →</a></p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

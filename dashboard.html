@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — TrackVision{% endblock %}
+{% block body %}
+
+<div class="app-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <a href="/" class="nav-logo sidebar-logo">Track<span>Vision</span></a>
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('dashboard') }}" class="s-link active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <a href="{{ url_for('person_track') }}" class="s-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+        Person Tracking
+      </a>
+      <a href="{{ url_for('vehicle_detect') }}" class="s-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="8" width="22" height="10" rx="2"/><path d="M5 8V6a2 2 0 012-2h10a2 2 0 012 2v2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+        Vehicle Detection
+      </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="user-chip">
+        <div class="user-avatar">{{ username[0]|upper }}</div>
+        <div class="user-info">
+          <strong>{{ username }}</strong>
+          <small>Free Plan</small>
+        </div>
+      </div>
+      <a href="{{ url_for('logout') }}" class="logout-btn" title="Sign out">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main-content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Welcome back, {{ username }} 👋</h1>
+        <p class="page-sub">Choose a module to start detecting and tracking</p>
+      </div>
+    </div>
+
+    <!-- Module cards -->
+    <div class="module-grid">
+      <a href="{{ url_for('person_track') }}" class="module-card person-card">
+        <div class="mc-glow"></div>
+        <div class="mc-top">
+          <div class="mc-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="32" height="32">
+              <circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/>
+            </svg>
+          </div>
+          <div class="mc-badge green">Active</div>
+        </div>
+        <h2 class="mc-title">Person Tracking</h2>
+        <p class="mc-desc">Track individuals with persistent IDs using DeepSORT + ReID. Works across camera re-entries.</p>
+        <div class="mc-features">
+          <span>ReID Matching</span>
+          <span>Live Webcam</span>
+          <span>Video Upload</span>
+        </div>
+        <div class="mc-cta">
+          Open Module
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+      </a>
+
+      <a href="{{ url_for('vehicle_detect') }}" class="module-card vehicle-card">
+        <div class="mc-glow"></div>
+        <div class="mc-top">
+          <div class="mc-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="32" height="32">
+              <rect x="1" y="8" width="22" height="10" rx="2"/>
+              <path d="M5 8V6a2 2 0 012-2h10a2 2 0 012 2v2"/>
+              <circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>
+            </svg>
+          </div>
+          <div class="mc-badge blue">Active</div>
+        </div>
+        <h2 class="mc-title">Vehicle Detection</h2>
+        <p class="mc-desc">Detect and classify Cars, Buses, Motorcycles and Trucks with YOLOv8m + ByteTrack.</p>
+        <div class="mc-features">
+          <span>4 Classes</span>
+          <span>ByteTrack</span>
+          <span>Video Upload</span>
+        </div>
+        <div class="mc-cta">
+          Open Module
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+      </a>
+    </div>
+
+    <!-- Info row -->
+    <div class="info-row">
+      <div class="info-card">
+        <div class="info-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div>
+          <strong>YOLOv8 Powered</strong>
+          <small>State-of-the-art object detection with high accuracy and speed</small>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon amber">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        </div>
+        <div>
+          <strong>Real-time Processing</strong>
+          <small>Live webcam feed with instant bounding box rendering</small>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon purple">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+        </div>
+        <div>
+          <strong>Deep ReID</strong>
+          <small>ResNet50 embeddings for persistent person identification</small>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+{% endblock %}

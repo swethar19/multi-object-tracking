@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Create Account — TrackVision{% endblock %}
+{% block body %}
+
+<div class="auth-layout">
+  <div class="auth-brand">
+    <a href="/" class="nav-logo large">Track<span>Vision</span></a>
+    <p class="auth-brand-sub">Start tracking in seconds</p>
+    <div class="auth-brand-visual">
+      <div class="floating-card">
+        <div class="fc-icon amber">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+        </div>
+        <div>
+          <strong>Person Tracking</strong>
+          <small>ReID across frames</small>
+        </div>
+      </div>
+      <div class="floating-card fc-delay">
+        <div class="fc-icon red">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="8" width="22" height="10" rx="2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+        </div>
+        <div>
+          <strong>Vehicle Detection</strong>
+          <small>4 classes supported</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="auth-form-wrap">
+    <div class="auth-card">
+      <h2 class="auth-title">Create account</h2>
+      <p class="auth-sub">Join TrackVision — it's free</p>
+
+      {% if error %}
+      <div class="alert alert-error">{{ error }}</div>
+      {% endif %}
+
+      <form method="POST" action="{{ url_for('register') }}" class="auth-form">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" name="username" placeholder="choose_a_username" required autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" placeholder="you@example.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" name="password" placeholder="min 8 characters" required minlength="8" autocomplete="new-password">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+      </form>
+
+      <p class="auth-switch">Already have an account? <a href="{{ url_for('login') }}">Sign in →</a></p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

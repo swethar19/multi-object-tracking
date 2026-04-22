@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% block title %}TrackVision — AI Tracking Platform{% endblock %}
+{% block body %}
+
+<nav class="nav-bar">
+  <a href="/" class="nav-logo">Track<span>Vision</span></a>
+  <div class="nav-links">
+    <a href="{{ url_for('login') }}" class="btn btn-ghost">Sign In</a>
+    <a href="{{ url_for('register') }}" class="btn btn-primary">Get Started</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-noise"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      Real-time AI Computer Vision
+    </div>
+    <h1 class="hero-title">
+      Track Everything.<br>
+      <em>Miss Nothing.</em>
+    </h1>
+    <p class="hero-sub">
+      Enterprise-grade multi-object tracking for people and vehicles —
+      powered by YOLOv8 and deep ReID neural networks.
+    </p>
+    <div class="hero-actions">
+      <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">Start Tracking Free</a>
+      <a href="{{ url_for('login') }}"    class="btn btn-outline btn-lg">Sign In</a>
+    </div>
+
+    <!-- Stat strip -->
+    <div class="hero-stats">
+      <div class="stat">
+        <strong>YOLOv8</strong>
+        <span>Detection</span>
+      </div>
+      <div class="stat-div"></div>
+      <div class="stat">
+        <strong>DeepSORT</strong>
+        <span>Tracking</span>
+      </div>
+      <div class="stat-div"></div>
+      <div class="stat">
+        <strong>ResNet50</strong>
+        <span>Re-ID</span>
+      </div>
+      <div class="stat-div"></div>
+      <div class="stat">
+        <strong>ByteTrack</strong>
+        <span>Vehicles</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Visual demo card -->
+  <div class="hero-visual">
+    <div class="demo-card">
+      <div class="demo-header">
+        <span class="demo-dot red"></span>
+        <span class="demo-dot amber"></span>
+        <span class="demo-dot green"></span>
+        <span class="demo-label">Live Detection Feed</span>
+      </div>
+      <div class="demo-canvas">
+        <div class="bbox bbox-1"><span>Person #1</span></div>
+        <div class="bbox bbox-2"><span>Person #2</span></div>
+        <div class="bbox bbox-3 vehicle"><span>Car #5</span></div>
+        <div class="scan-line"></div>
+      </div>
+      <div class="demo-footer">
+        <span class="pill green">● LIVE</span>
+        <span class="pill blue">3 objects</span>
+        <span class="pill amber">24 fps</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="container">
+    <div class="section-label">What We Offer</div>
+    <h2 class="section-title">Two Powerful Modules</h2>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feat-icon person-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/>
+          </svg>
+        </div>
+        <h3>Person Tracking</h3>
+        <p>Persistent identity assignment across frames using cosine-similarity ReID. Persons re-entering frame get their original ID.</p>
+        <ul class="feat-list">
+          <li>✓ Re-identification after exit</li>
+          <li>✓ DeepSORT multi-track</li>
+          <li>✓ Live webcam + video upload</li>
+        </ul>
+      </div>
+
+      <div class="feature-card featured">
+        <div class="feat-icon vehicle-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <rect x="1" y="8" width="22" height="10" rx="2"/>
+            <path d="M5 8V6a2 2 0 012-2h10a2 2 0 012 2v2"/>
+            <circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>
+          </svg>
+        </div>
+        <h3>Vehicle Detection</h3>
+        <p>Detect and track Cars, Buses, Trucks, and Motorcycles with YOLOv8m and ByteTrack for smooth consistent IDs.</p>
+        <ul class="feat-list">
+          <li>✓ 4 vehicle classes</li>
+          <li>✓ ByteTrack persistence</li>
+          <li>✓ Confidence scoring</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <span class="nav-logo">Track<span>Vision</span></span>
+    <span class="footer-copy">© 2026 TrackVision. AI Computer Vision Platform.</span>
+  </div>
+</footer>
+
+{% endblock %}

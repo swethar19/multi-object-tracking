@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+{% block title %}Person Tracking — TrackVision{% endblock %}
+{% block body %}
+
+<div class="app-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <a href="/" class="nav-logo sidebar-logo">Track<span>Vision</span></a>
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('dashboard') }}" class="s-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <a href="{{ url_for('person_track') }}" class="s-link active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+        Person Tracking
+      </a>
+      <a href="{{ url_for('vehicle_detect') }}" class="s-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="8" width="22" height="10" rx="2"/><path d="M5 8V6a2 2 0 012-2h10a2 2 0 012 2v2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+        Vehicle Detection
+      </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="user-chip">
+        <div class="user-avatar">{{ username[0]|upper }}</div>
+        <div class="user-info">
+          <strong>{{ username }}</strong>
+          <small>Free Plan</small>
+        </div>
+      </div>
+      <a href="{{ url_for('logout') }}" class="logout-btn" title="Sign out">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+      </a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Person Tracking</h1>
+        <p class="page-sub">Multi-person tracking with persistent ReID across camera exits</p>
+      </div>
+      <div class="status-pill" id="statusPill">
+        <span class="status-dot"></span>
+        <span id="statusText">Idle</span>
+      </div>
+    </div>
+
+    <!-- Mode selector -->
+    <div class="mode-tabs">
+      <button class="mode-tab active" id="tabLive" onclick="setMode('live')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+        Live Webcam
+      </button>
+      <button class="mode-tab" id="tabVideo" onclick="setMode('video')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+        Upload Video
+      </button>
+    </div>
+
+    <div class="tracker-layout">
+      <!-- Controls panel -->
+      <div class="controls-panel">
+        <!-- Live mode -->
+        <div id="liveControls" class="mode-section">
+          <h3 class="ctrl-title">Webcam Controls</h3>
+          <p class="ctrl-hint">Uses your default camera (index 0). Ensure webcam is connected.</p>
+          <button class="btn btn-success btn-block" id="startLiveBtn" onclick="startLive()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>
+            Start Live Detection
+          </button>
+          <button class="btn btn-danger btn-block mt-2" id="stopLiveBtn" onclick="stopTracking()" style="display:none">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"><rect x="6" y="6" width="12" height="12"/></svg>
+            Stop Detection
+          </button>
+        </div>
+
+        <!-- Video upload mode -->
+        <div id="videoControls" class="mode-section" style="display:none">
+          <h3 class="ctrl-title">Video Upload</h3>
+          <div class="drop-zone" id="personDropZone">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="36"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <p>Drop video here</p>
+            <small>MP4, AVI, MOV up to 500MB</small>
+            <input type="file" id="personVideoInput" accept="video/*" style="display:none">
+          </div>
+          <div id="personFileName" class="file-name-label" style="display:none"></div>
+          <button class="btn btn-success btn-block mt-2" id="startVideoBtn" onclick="startVideo()" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/></svg>
+            Process Video
+          </button>
+          <button class="btn btn-danger btn-block mt-2" id="stopVideoBtn" onclick="stopTracking()" style="display:none">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"><rect x="6" y="6" width="12" height="12"/></svg>
+            Stop
+          </button>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+          <h4>Detection Info</h4>
+          <div class="legend-item"><span class="legend-box green"></span> Person bounding box</div>
+          <div class="legend-item"><span class="legend-box green-label"></span> ID label</div>
+          <div class="legend-item"><span class="legend-box hud"></span> Live stats HUD</div>
+          <div class="legend-note">
+            <strong>Re-ID</strong>: Persons exiting & re-entering frame are matched by cosine similarity (threshold: 0.75)
+          </div>
+        </div>
+      </div>
+
+      <!-- Feed panel -->
+      <div class="feed-panel">
+        <div class="feed-wrap" id="feedWrap">
+          <div class="feed-placeholder" id="feedPlaceholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" width="56"><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+            <h3>No feed active</h3>
+            <p>Start live detection or upload a video to begin tracking</p>
+          </div>
+          <img id="trackFeed" class="track-feed" style="display:none" alt="Tracking Feed">
+          <div class="feed-overlay" id="feedOverlay" style="display:none">
+            <div class="recording-badge">
+              <span class="rec-dot"></span> TRACKING
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+{% endblock %}
+{% block extra_scripts %}
+<script>
+let currentMode = 'live';
+let isActive = false;
+
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('tabLive').classList.toggle('active', mode === 'live');
+  document.getElementById('tabVideo').classList.toggle('active', mode === 'video');
+  document.getElementById('liveControls').style.display = mode === 'live' ? 'block' : 'none';
+  document.getElementById('videoControls').style.display = mode === 'video' ? 'block' : 'none';
+  stopTracking();
+}
+
+// Drop zone
+const dropZone = document.getElementById('personDropZone');
+const fileInput = document.getElementById('personVideoInput');
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('drag-over');
+  if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
+
+function handleFile(f) {
+  document.getElementById('personFileName').textContent = '📁 ' + f.name;
+  document.getElementById('personFileName').style.display = 'block';
+  document.getElementById('startVideoBtn').disabled = false;
+  document.getElementById('startVideoBtn')._file = f;
+}
+
+function setStatus(text, active) {
+  isActive = active;
+  const pill = document.getElementById('statusPill');
+  const dot  = pill.querySelector('.status-dot');
+  document.getElementById('statusText').textContent = text;
+  pill.classList.toggle('active', active);
+  dot.classList.toggle('pulsing', active);
+}
+
+function showFeed() {
+  document.getElementById('feedPlaceholder').style.display = 'none';
+  document.getElementById('trackFeed').style.display = 'block';
+  document.getElementById('feedOverlay').style.display = 'flex';
+  document.getElementById('trackFeed').src = '/stream/person?' + Date.now();
+}
+
+function hideFeed() {
+  document.getElementById('feedPlaceholder').style.display = 'flex';
+  document.getElementById('trackFeed').style.display = 'none';
+  document.getElementById('feedOverlay').style.display = 'none';
+  document.getElementById('trackFeed').src = '';
+}
+
+async function startLive() {
+  document.getElementById('startLiveBtn').style.display = 'none';
+  document.getElementById('stopLiveBtn').style.display = 'block';
+  setStatus('Running — Live', true);
+  await fetch('/api/person/start-live', { method: 'POST' });
+  showFeed();
+}
+
+async function startVideo() {
+  const btn  = document.getElementById('startVideoBtn');
+  const file = btn._file;
+  if (!file) return;
+  const fd = new FormData(); fd.append('video', file);
+  document.getElementById('startVideoBtn').style.display = 'none';
+  document.getElementById('stopVideoBtn').style.display  = 'block';
+  setStatus('Processing video…', true);
+  await fetch('/api/person/upload', { method: 'POST', body: fd });
+  showFeed();
+}
+
+async function stopTracking() {
+  await fetch('/api/person/stop', { method: 'POST' });
+  hideFeed();
+  setStatus('Idle', false);
+  document.getElementById('startLiveBtn').style.display = 'block';
+  document.getElementById('stopLiveBtn').style.display  = 'none';
+  document.getElementById('startVideoBtn').style.display = 'block';
+  document.getElementById('stopVideoBtn').style.display  = 'none';
+}
+</script>
+{% endblock %}
